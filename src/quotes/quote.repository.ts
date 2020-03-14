@@ -2,6 +2,7 @@ import { Repository, EntityRepository } from 'typeorm';
 import { Quote } from './quote.entity';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { QuoteStatus } from './quote-status.enum';
+import { GetQuotesFilterDto } from './dto/get-quotes-filter.dto';
 
 @EntityRepository(Quote)
 export class QuoteRepository extends Repository<Quote> {
@@ -16,4 +17,19 @@ export class QuoteRepository extends Repository<Quote> {
     return newQuote;
   }
 
+  async getQuotes(filterDto: GetQuotesFilterDto): Promise<Quote[]> {
+    const { status, search } = filterDto;
+    const query = this.createQueryBuilder('quote');
+
+    if (status) {
+      query.andWhere('quote.status = :status', { status });
+    }
+
+    if (search) {
+      query.andWhere('quote.quote LIKE :search', { search: `%${search}%` });
+    }
+
+    const quotes = await query.getMany();
+    return quotes;
+  }
 }

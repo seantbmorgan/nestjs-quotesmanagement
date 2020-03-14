@@ -1,0 +1,23 @@
+FROM alpine:3.10
+
+# Create app directory
+WORKDIR /usr/src/application
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN apk add yarn
+RUN yarn
+
+# Bundle app source
+COPY . .
+
+# EXPOSE 5001
+# EXPOSE 3001
+
+CMD [ "yarn", "start:dev"]
+
+#docker run -p 4000:5001 -p 4001:3001 -d stbmorgan/js-blockchain
+#stbmorgan/js-blockchain
