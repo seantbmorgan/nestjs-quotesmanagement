@@ -49,7 +49,9 @@ export class CategoryRepository extends Repository<Category> {
     const userId = user.id;
     const query = this.createQueryBuilder('category');
     query.where('category.userId = :userId', { userId });
-    query.andWhere('category.name = :name', { name });
+    if (name) {
+      query.andWhere('category.name = :name', { name });
+    }
     const categories = await query.getMany();
     return categories;
   }

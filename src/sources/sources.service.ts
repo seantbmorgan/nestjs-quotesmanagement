@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
 import { SourceRepository } from './source.repository';
@@ -14,6 +14,14 @@ export class SourcesService {
 
     async getSource(filterDto: GetSourcesFilterDto, user: User): Promise<Source[]> {
         return this.sourceRepository.getSources(filterDto, user);
+      }
+
+      async getSourceById(id: number, user: User): Promise<Source> {
+        const source = await this.sourceRepository.findOne({
+          where: { id, userId: user.id },
+        });
+        if (!source) throw new NotFoundException(`Source with id ${id} not found`);
+        return source;
       }
 
     async createSource(createSourceDto: CreateSourceDto, user: User){

@@ -9,10 +9,7 @@ import { CreateTagDto } from './dto/create-tag-dto';
 export class TagRepository extends Repository<Tag> {
   private logger = new Logger('TagRepository');
 
-  async createTag(
-    createTagDto: CreateTagDto,
-    user: User,
-  ): Promise<Tag> {
+  async createTag(createTagDto: CreateTagDto, user: User): Promise<Tag> {
     this.logger.log(`
       Create Tag 
         createTagDto : ${JSON.stringify(createTagDto)}
@@ -33,22 +30,21 @@ export class TagRepository extends Repository<Tag> {
       this.logger.log(`
       ${JSON.stringify(newTag)} does not exit, creating.
     `);
-    newTag.user = user;
+      newTag.user = user;
       await newTag.save();
       delete newTag.user; // Do Not Return User Data to Client
       return newTag;
     }
   }
 
-  async getTags(
-    filterDto: GetTagFilterDto,
-    user: User,
-  ): Promise<Tag[]> {
+  async getTags(filterDto: GetTagFilterDto, user: User): Promise<Tag[]> {
     const { name } = filterDto;
     const userId = user.id;
     const query = this.createQueryBuilder('tag');
     query.where('tag.userId = :userId', { userId });
-    query.andWhere('tag.name = :name', { name });
+    if (name) {
+      query.andWhere('tag.name = :name', { name });
+    }
     const tags = await query.getMany();
     return tags;
   }
