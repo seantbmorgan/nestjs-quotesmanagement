@@ -17,4 +17,8 @@ export class CreateQuoteDto {
 
   @IsNotEmpty()
   sourceTitle: string;
+
+  categories: string;
+
+  tags: string;
 }

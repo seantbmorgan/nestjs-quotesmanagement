@@ -10,6 +10,8 @@ import { Quote } from './quote.entity';
 import { User } from 'src/auth/user.entity';
 import { AuthorsService } from 'src/authors/authors.service';
 import { SourcesService } from 'src/sources/sources.service';
+import { CategoriesService } from 'src/categories/categories.service';
+import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
 export class QuotesService {
@@ -19,6 +21,8 @@ export class QuotesService {
     @InjectRepository(QuoteRepository) private quoteRepository: QuoteRepository,
     private authorService: AuthorsService,
     private sourceService: SourcesService,
+    private categoryService: CategoriesService,
+    private tagsService: TagsService,
   ) {}
 
   async getQuotes(filterDto: GetQuotesFilterDto, user: User): Promise<Quote[]> {
@@ -48,8 +52,46 @@ export class QuotesService {
            createQuoteDto : ${JSON.stringify(createQuoteDto)}
            user           : ${JSON.stringify(user)}
     `);
-    const { authorFirstname, authorLastname, sourceTitle } = createQuoteDto;
+    const {
+      authorFirstname,
+      authorLastname,
+      sourceTitle,
+      categories,
+      tags,
+    } = createQuoteDto;
 
+    const categoryArray = categories.split(',');
+    const tagArray = tags.split(',');
+
+    // Save Categories
+    const saveCategoriesData = async () => {
+      return Promise.all(
+        categoryArray.map(category =>
+          this.categoryService.createCategory({ name: category }, user),
+        ),
+      );
+    };
+    let savedCategories = []
+    saveCategoriesData().then(categories => {
+      savedCategories = categories;
+    })
+
+    // Save Tags
+    const saveTagsData = async () => {
+      return Promise.all(
+        tagArray.map(tag =>
+          this.tagsService.createTags({ name: tag }, user),
+        ),
+      );
+    };
+    let savedTags = []
+    saveTagsData().then(tags => {
+      savedTags = tags;
+    })
+
+    console.log(savedTags);
+
+    // Save Author
     const author = await this.authorService.createAuthor(
       { firstname: authorFirstname, lastname: authorLastname },
       user,
@@ -63,6 +105,8 @@ export class QuotesService {
       createQuoteDto,
       author,
       source,
+      savedCategories,
+      savedTags,
       user,
     );
   }
