@@ -1,9 +1,20 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty } from 'class-validator';
 
-export class CreateQuoteDto{
-    @IsNotEmpty()
-    quote: string;
+export class CreateQuoteDto {
+  @IsNotEmpty()
+  quote: string;
 
-    @IsNotEmpty()
-    authorId: string; 
+  authorId: number;
+
+  @IsNotEmpty()
+  authorFirstname: string;
+
+  @IsNotEmpty()
+  authorLastname: string;
+
+  @IsNotEmpty()
+  page: number;
+
+  @IsNotEmpty()
+  sourceTitle: string;
 }
