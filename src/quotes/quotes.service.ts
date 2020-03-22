@@ -71,25 +71,21 @@ export class QuotesService {
         ),
       );
     };
-    let savedCategories = []
+    let savedCategories = [];
     saveCategoriesData().then(categories => {
       savedCategories = categories;
-    })
+    });
 
     // Save Tags
     const saveTagsData = async () => {
       return Promise.all(
-        tagArray.map(tag =>
-          this.tagsService.createTags({ name: tag }, user),
-        ),
+        tagArray.map(tag => this.tagsService.createTags({ name: tag }, user)),
       );
     };
-    let savedTags = []
+    let savedTags = [];
     saveTagsData().then(tags => {
       savedTags = tags;
-    })
-
-    console.log(savedTags);
+    });
 
     // Save Author
     const author = await this.authorService.createAuthor(
@@ -138,9 +134,62 @@ export class QuotesService {
     user: User,
   ): Promise<Quote> {
     const quote = await this.getQuoteById(id, user);
+
     if (!quote) throw new NotFoundException(`Quote with id ${id} not found`);
 
-    _.merge(quote, updateQuoteDto);
+    const {
+      authorFirstname,
+      authorLastname,
+      sourceTitle,
+      categories,
+      tags,
+    } = updateQuoteDto;
+
+    const categoryArray = categories.split(',');
+    const tagArray = tags.split(',');
+
+    // Save Categories
+    const saveCategoriesData = async () => {
+      return Promise.all(
+        categoryArray.map(category =>
+          this.categoryService.createCategory({ name: category }, user),
+        ),
+      );
+    };
+    let savedCategories = [];
+    saveCategoriesData().then(categories => {
+      savedCategories = categories;
+    });
+
+    // Save Tags
+    const saveTagsData = async () => {
+      return Promise.all(
+        tagArray.map(tag => this.tagsService.createTags({ name: tag }, user)),
+      );
+    };
+    let savedTags = [];
+    saveTagsData().then(tags => {
+      savedTags = tags;
+    });
+
+    // Save Author
+    const author = await this.authorService.createAuthor(
+      { firstname: authorFirstname, lastname: authorLastname },
+      user,
+    );
+    const source = await this.sourceService.createSource(
+      { title: sourceTitle },
+      user,
+    );
+
+    quote.quote = updateQuoteDto.quote;
+    quote.author = author;
+    quote.source = source;
+    quote.page = updateQuoteDto.page;
+    quote.categories = savedCategories;
+    quote.tags = savedTags;
+
+    // _.merge(quote, updateQuoteDto);
 
     await quote.save();
     // quote = {...updateQuoteDto };
