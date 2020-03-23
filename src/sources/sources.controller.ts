@@ -20,6 +20,9 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { SourcesService } from './sources.service';
 import { GetSourcesFilterDto } from './dto/get-sources-filter-dto';
 import { Source } from './source.entity';
+import { CreateSourceDto } from './dto/create-source-dto';
+import { UpdateSourceDto } from './dto/update-source-dto';
+import { UpdateResult } from 'typeorm';
 
 @UseGuards(AuthGuard())
 @Controller('sources')
@@ -42,38 +45,30 @@ export class SourcesController {
     return this.sourcesService.getSourceById(id, user);
   }
 
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // createQuote(
-  //   @Body() createQuoteDto: CreateQuoteDto,
-  //   @GetUser() user: User,
-  // ): Promise<Quote> {
-  //   return this.quotesService.createQuote(createQuoteDto, user);
-  // }
+  @Post()
+  @UsePipes(ValidationPipe)
+  createSource(
+    @Body() createSourceDto: CreateSourceDto,
+    @GetUser() user: User,
+  ): Promise<Source> {
+    return this.sourcesService.createSource(createSourceDto, user);
+  }
 
-  // @Patch('status/:id')
-  // updateQuoteStatus(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body('status', QuoteStatusValidationPipe) status: QuoteStatus,
-  //   @GetUser() user: User,
-  // ): Promise<Quote> {
-  //   return this.quotesService.updateQuoteStatus(id, status, user);
-  // }
+  @Patch('/:id')
+  @UsePipes(ValidationPipe)
+  updateSource(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSourceDto: UpdateSourceDto,
+    @GetUser() user: User,
+  ): Promise<UpdateResult> {
+    return this.sourcesService.updateSource(id, updateSourceDto, user);
+  }
 
-  // @Patch('/:id')
-  // updateQuote(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body() updateQuoteDto: UpdateQuoteDto,
-  //   @GetUser() user: User,
-  // ): Promise<Quote> {
-  //   return this.quotesService.updateQuote(id, updateQuoteDto, user);
-  // }
-
-  // @Delete('/:id')
-  // deleteQuoteById(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @GetUser() user: User,
-  // ): Promise<void> {
-  //   return this.quotesService.deleteQuoteById(id, user);
-  // }
+  @Delete('/:id')
+  deleteSourceById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.sourcesService.deleteSourceById(id, user);
+  }
 }

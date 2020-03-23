@@ -5,6 +5,7 @@ import { SourceRepository } from './source.repository';
 import { GetSourcesFilterDto } from './dto/get-sources-filter-dto';
 import { CreateSourceDto } from './dto/create-source-dto';
 import { Source } from './source.entity';
+import { UpdateSourceDto } from './dto/update-source-dto';
 
 @Injectable()
 export class SourcesService {
@@ -26,5 +27,25 @@ export class SourcesService {
 
     async createSource(createSourceDto: CreateSourceDto, user: User){
         return this.sourceRepository.createSource(createSourceDto, user)
+    }
+
+    async updateSource(id: number, updateSourceDto: UpdateSourceDto, user: User) {
+      const { title } = updateSourceDto;
+      const source = await this.sourceRepository
+        .createQueryBuilder()
+        .update('source')
+        .set({ title })
+        .where('id = :id', { id })
+        .execute();
+      return source;
+    }
+  
+    async deleteSourceById(id: number, user: User): Promise<void> {
+      const result = await this.sourceRepository.delete({
+        id,
+        userId: user.id,
+      });
+      if (!(await result).affected)
+        throw new NotFoundException(`Tag with id ${id} not found`);
     }
 }

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category-dto';
+import { UpdateCategoryDto } from './dto/update-category-dto';
 
 @Injectable()
 export class CategoriesService {
@@ -21,8 +22,6 @@ export class CategoriesService {
   }
 
   async getCategoryById(id: number, user: User): Promise<Category> {
-    console.log(user);
-
     const category = await this.categoryRepository.findOne({
       where: { id, userId: user.id },
     });
@@ -32,5 +31,25 @@ export class CategoriesService {
 
   async createCategory(createCategoryDto: CreateCategoryDto, user: User) {
     return this.categoryRepository.createCategory(createCategoryDto, user);
+  }
+
+  async updateCategory(id: number, updateCategoryDto: UpdateCategoryDto, user: User) {
+    const { name } = updateCategoryDto;
+    const category = await this.categoryRepository
+      .createQueryBuilder()
+      .update('category')
+      .set({ name })
+      .where('id = :id', { id })
+      .execute();
+    return category;
+  }
+
+  async deleteCategoryById(id: number, user: User): Promise<void> {
+    const result = await this.categoryRepository.delete({
+      id,
+      userId: user.id,
+    });
+    if (!(await result).affected)
+      throw new NotFoundException(`Category with id ${id} not found`);
   }
 }

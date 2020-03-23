@@ -5,6 +5,7 @@ import { AuthorRepository } from './author.repository';
 import { GetAuthorsFilterDto } from './dto/get-authors-filter-dto';
 import { Author } from './author.entity';
 import { User } from 'src/auth/user.entity';
+import { UpdateAuthorDto } from './dto/update-author-dto';
 
 @Injectable()
 export class AuthorsService {
@@ -30,5 +31,25 @@ export class AuthorsService {
 
   async createAuthor(createAuthorDto: CreateAuthorDto, user: User) {
     return this.authorRepository.createAuthor(createAuthorDto, user);
+  }
+
+  async updateAuthor(id: number, updateAuthorDto: UpdateAuthorDto, user: User) {
+    const { firstname, lastname } = updateAuthorDto;
+    const author = await this.authorRepository
+      .createQueryBuilder('author')
+      .update('author')
+      .set({ firstname, lastname })
+      .where('id = :id', { id })
+      .execute();
+    return author;
+  }
+
+  async deleteAuthorById(id: number, user: User): Promise<void> {
+    const result = await this.authorRepository.delete({
+      id,
+      userId: user.id,
+    });
+    if (!(await result).affected)
+      throw new NotFoundException(`Author with id ${id} not found`);
   }
 }

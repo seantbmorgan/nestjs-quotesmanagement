@@ -21,7 +21,7 @@ export class Author extends BaseEntity {
   lastname: string;
 
   @Column()
-  userId: string;
+  userId: number;
 
   @OneToMany(
     quote => Quote,

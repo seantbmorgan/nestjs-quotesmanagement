@@ -20,7 +20,7 @@ import {
     name: string;
   
     @Column()
-    userId: string;
+    userId: number;
 
     @ManyToMany(type => Quote)
     @JoinTable()

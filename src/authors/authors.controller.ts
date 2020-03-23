@@ -20,7 +20,9 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { AuthorsService } from './authors.service';
 import { GetAuthorsFilterDto } from './dto/get-authors-filter-dto';
 import { Author } from './author.entity';
-
+import { CreateAuthorDto } from './dto/create-author-dto';
+import { UpdateAuthorDto } from './dto/update-author-dto';
+import { UpdateResult } from 'typeorm';
 @UseGuards(AuthGuard())
 @Controller('authors')
 export class AuthorsController {
@@ -42,38 +44,30 @@ export class AuthorsController {
     return this.authorsService.getAuthorById(id, user);
   }
 
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // createQuote(
-  //   @Body() createQuoteDto: CreateQuoteDto,
-  //   @GetUser() user: User,
-  // ): Promise<Quote> {
-  //   return this.quotesService.createQuote(createQuoteDto, user);
-  // }
+  @Post()
+  @UsePipes(ValidationPipe)
+  createAuthor(
+    @Body() createAuthorDto: CreateAuthorDto,
+    @GetUser() user: User,
+  ): Promise<Author> {
+    return this.authorsService.createAuthor(createAuthorDto, user);
+  }
 
-  // @Patch('status/:id')
-  // updateQuoteStatus(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body('status', QuoteStatusValidationPipe) status: QuoteStatus,
-  //   @GetUser() user: User,
-  // ): Promise<Quote> {
-  //   return this.quotesService.updateQuoteStatus(id, status, user);
-  // }
+  @Patch('/:id')
+  @UsePipes(ValidationPipe)
+  updateAuthor(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateAuthorDto: UpdateAuthorDto,
+    @GetUser() user: User,
+  ): Promise<UpdateResult> {
+    return this.authorsService.updateAuthor(id, updateAuthorDto, user);
+  }
 
-  // @Patch('/:id')
-  // updateQuote(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body() updateQuoteDto: UpdateQuoteDto,
-  //   @GetUser() user: User,
-  // ): Promise<Quote> {
-  //   return this.quotesService.updateQuote(id, updateQuoteDto, user);
-  // }
-
-  // @Delete('/:id')
-  // deleteQuoteById(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @GetUser() user: User,
-  // ): Promise<void> {
-  //   return this.quotesService.deleteQuoteById(id, user);
-  // }
+  @Delete('/:id')
+  deleteAuthorById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.authorsService.deleteAuthorById(id, user);
+  }
 }

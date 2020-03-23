@@ -5,6 +5,7 @@ import { TagRepository } from './tags.repository';
 import { GetTagFilterDto } from './dto/get-tag-filter-dto';
 import { CreateTagDto } from './dto/create-tag-dto';
 import { Tag } from './tag.entity';
+import { UpdateTagDto } from './dto/update-tag-dto';
 
 @Injectable()
 export class TagsService {
@@ -28,7 +29,27 @@ export class TagsService {
   return tag;
   }
 
-  async createTags(createTagDto: CreateTagDto, user: User) {
+  async createTag(createTagDto: CreateTagDto, user: User) {
     return this.tagRepository.createTag(createTagDto, user);
+  }
+
+  async updateTag(id: number, updateTagDto: UpdateTagDto, user: User) {
+    const { name } = updateTagDto;
+    const tag = await this.tagRepository
+      .createQueryBuilder()
+      .update('tag')
+      .set({ name })
+      .where('id = :id', { id })
+      .execute();
+    return tag;
+  }
+
+  async deleteTagById(id: number, user: User): Promise<void> {
+    const result = await this.tagRepository.delete({
+      id,
+      userId: user.id,
+    });
+    if (!(await result).affected)
+      throw new NotFoundException(`Tag with id ${id} not found`);
   }
 }

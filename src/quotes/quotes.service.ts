@@ -79,7 +79,7 @@ export class QuotesService {
     // Save Tags
     const saveTagsData = async () => {
       return Promise.all(
-        tagArray.map(tag => this.tagsService.createTags({ name: tag }, user)),
+        tagArray.map(tag => this.tagsService.createTag({ name: tag }, user)),
       );
     };
     let savedTags = [];
@@ -164,7 +164,7 @@ export class QuotesService {
     // Save Tags
     const saveTagsData = async () => {
       return Promise.all(
-        tagArray.map(tag => this.tagsService.createTags({ name: tag }, user)),
+        tagArray.map(tag => this.tagsService.createTag({ name: tag }, user)),
       );
     };
     let savedTags = [];

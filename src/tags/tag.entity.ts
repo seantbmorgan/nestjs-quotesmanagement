@@ -20,7 +20,7 @@ export class Tag extends BaseEntity {
   name: string;
 
   @Column()
-  userId: string;
+  userId: number;
 
   @ManyToMany(type => Quote)
   @JoinTable()
