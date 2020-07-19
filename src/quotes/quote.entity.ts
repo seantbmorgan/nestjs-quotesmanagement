@@ -39,6 +39,12 @@ export class Quote extends BaseEntity {
   @Column()
   userId: number;
 
+  @Column()
+  created: Date;
+
+  @Column()
+  edited: Date;
+
   @ManyToMany(type => Tag)
   @JoinTable()
   tags: Tag[];

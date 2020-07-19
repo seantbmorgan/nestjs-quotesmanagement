@@ -124,6 +124,7 @@ export class QuotesService {
     const quote = await this.getQuoteById(id, user);
     if (!quote) throw new NotFoundException(`Quote with id ${id} not found`);
     quote.status = status;
+    quote.edited = new Date();
     await quote.save();
     return quote;
   }
@@ -188,6 +189,7 @@ export class QuotesService {
     quote.page = updateQuoteDto.page;
     quote.categories = savedCategories;
     quote.tags = savedTags;
+    quote.edited = new Date();
 
     // _.merge(quote, updateQuoteDto);
 

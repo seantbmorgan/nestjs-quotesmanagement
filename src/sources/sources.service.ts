@@ -46,6 +46,6 @@ export class SourcesService {
         userId: user.id,
       });
       if (!(await result).affected)
-        throw new NotFoundException(`Tag with id ${id} not found`);
+        throw new NotFoundException(`Source with id ${id} not found`);
     }
 }

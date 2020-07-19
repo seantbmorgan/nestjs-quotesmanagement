@@ -12,13 +12,13 @@ import { Author } from 'src/authors/author.entity';
 import { Source } from 'src/sources/source.entity';
 
 @Entity()
-@Unique(['username'])
+@Unique(['email'])
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  username: string;
+  email: string;
 
   @Column()
   password: string;

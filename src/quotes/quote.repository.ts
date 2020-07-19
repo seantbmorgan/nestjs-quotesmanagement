@@ -29,6 +29,8 @@ export class QuoteRepository extends Repository<Quote> {
     newQuote.categories = categories;
     newQuote.tags = tags;
     newQuote.status = QuoteStatus.ACTIVE;
+    newQuote.created = new Date();
+    newQuote.edited = new Date();
     await newQuote.save();
     delete newQuote.user; // Do Not Return User Data to Client
     return newQuote;
@@ -52,6 +54,7 @@ export class QuoteRepository extends Repository<Quote> {
     query.leftJoinAndSelect('quote.source', 'source');
     query.leftJoinAndSelect('quote.categories', 'category');
     query.leftJoinAndSelect('quote.tags', 'tag');
+    query.orderBy('quote.created', 'DESC');
     const quotes = await query.getMany();
     return quotes;
   }

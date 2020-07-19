@@ -23,6 +23,7 @@ import { Author } from './author.entity';
 import { CreateAuthorDto } from './dto/create-author-dto';
 import { UpdateAuthorDto } from './dto/update-author-dto';
 import { UpdateResult } from 'typeorm';
+
 @UseGuards(AuthGuard())
 @Controller('authors')
 export class AuthorsController {

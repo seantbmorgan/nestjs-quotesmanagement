@@ -2,9 +2,12 @@ import { MinLength, MaxLength, IsString, Matches } from 'class-validator';
 
 export class AuthCredentialsDto {
   @IsString()
-  @MinLength(4)
-  @MaxLength(20)
-  username: string;
+  @MinLength(6)
+  @MaxLength(100)
+  @Matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, {
+    message: 'Please use a valid email address.',
+  }) // https://www.regextester.com/95447
+  email: string;
 
   @IsString()
   @MinLength(8)

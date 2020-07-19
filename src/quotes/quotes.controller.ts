@@ -26,15 +26,14 @@ import { UpdateQuoteDto } from './dto/update-quote.dto';
 @UseGuards(AuthGuard())
 @Controller('quotes')
 export class QuotesController {
-  constructor(
-    private quotesService: QuotesService,
-  ) {}
+  constructor(private quotesService: QuotesService) {}
 
   @Get()
   getQuotes(
     @Query(ValidationPipe) filterDto: GetQuotesFilterDto,
     @GetUser() user: User,
   ) {
+    console.log(filterDto, user);
     return this.quotesService.getQuotes(filterDto, user);
   }
 

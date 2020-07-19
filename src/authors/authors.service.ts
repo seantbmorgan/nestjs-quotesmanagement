@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAuthorDto } from './dto/create-author-dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm/index';
 import { AuthorRepository } from './author.repository';
 import { GetAuthorsFilterDto } from './dto/get-authors-filter-dto';
 import { Author } from './author.entity';

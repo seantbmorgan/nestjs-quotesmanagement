@@ -11,10 +11,10 @@ import * as winston from 'winston';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   async signup(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { username, password } = authCredentialsDto;
+    const { email, password } = authCredentialsDto;
 
     const user = new User();
-    user.username = username;
+    user.email = email;
     user.salt = await bycrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
 
@@ -24,7 +24,7 @@ export class UserRepository extends Repository<User> {
       // @ TODO : Enum for error codes
       if (error.code === '23505')
         throw new ConflictException(
-          `User with username ${username} already exists.`,
+          `User with email ${email} already exists.`,
         );
       throw new InternalServerErrorException();
     }
@@ -33,12 +33,12 @@ export class UserRepository extends Repository<User> {
   async validateUserPassword(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<string> {
-    const { username, password } = authCredentialsDto;
+    const { email, password } = authCredentialsDto;
 
-    const user = await this.findOne({ username });
+    const user = await this.findOne({ email });
 
     if (user && await user.validatePassword(password)) {
-      return user.username;
+      return user.email;
     } else {
       return null;
     }
